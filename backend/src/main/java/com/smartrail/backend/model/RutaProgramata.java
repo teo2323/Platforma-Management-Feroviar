@@ -1,5 +1,7 @@
 package com.smartrail.backend.model;
 
+import java.util.List;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import java.time.LocalTime;
 
@@ -30,6 +32,11 @@ public class RutaProgramata {
     @Column(name = "ora_sosire_programata")
     private LocalTime oraSosireProgramata;
 
+    @OneToMany(mappedBy = "rutaProgramata")
+
+    @JsonIgnoreProperties("rutaProgramata")
+    private List<OprireTraseu> opriri;
+
     public RutaProgramata() {}
 
 
@@ -50,4 +57,9 @@ public class RutaProgramata {
 
     public LocalTime getOraSosireProgramata() { return oraSosireProgramata; }
     public void setOraSosireProgramata(LocalTime oraSosireProgramata) { this.oraSosireProgramata = oraSosireProgramata; }
+
+    public List<OprireTraseu> getOpriri() { return opriri; }
+    public void setOpriri(List<OprireTraseu> opriri) { this.opriri = opriri; }
+
+
 }
