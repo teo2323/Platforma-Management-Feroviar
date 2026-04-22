@@ -4,7 +4,7 @@ import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import { Search, Train, AlertTriangle, Info, MapPin } from 'lucide-react';
 import 'leaflet/dist/leaflet.css';
 
-// Fix pentru iconițele de marker Leaflet care dispar uneori în React
+
 import L from 'leaflet';
 import markerIcon from 'leaflet/dist/images/marker-icon.png';
 import markerShadow from 'leaflet/dist/images/marker-shadow.png';
@@ -18,7 +18,7 @@ const App = () => {
   const handleSearch = async () => {
     setLoading(true);
     try {
-      // Endpoint-ul de la backend-ul lui Teo
+    
       const response = await axios.get('http://localhost:8080/api/trenuri/search');
       setTrains(response.data);
     } catch (error) {
@@ -31,7 +31,7 @@ const App = () => {
 
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col font-sans">
-      {/* Navigation Bar */}
+      {}
       <nav className="bg-slate-900 text-white p-4 shadow-2xl sticky top-0 z-[1001]">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
           <h1 className="text-2xl font-black flex items-center gap-2 tracking-tighter">
@@ -44,7 +44,7 @@ const App = () => {
       </nav>
 
       <main className="max-w-7xl mx-auto p-6 w-full flex-1">
-        {/* Search Bar Container */}
+        {}
         <div className="bg-white p-8 rounded-[2rem] shadow-sm border border-slate-200 mb-8 mt-4 transition-all hover:shadow-md">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-end">
             <div className="space-y-2">
@@ -62,10 +62,10 @@ const App = () => {
           </div>
         </div>
 
-        {/* Content Grid */}
+        {}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
           
-          {/* Results Side */}
+          {}
           <div className="space-y-6">
             <h2 className="text-xl font-black flex items-center gap-2 text-slate-800 ml-2">
               <Info size={24} className="text-blue-600" /> RECOMANDĂRI SMART AI
@@ -101,7 +101,7 @@ const App = () => {
             )}
           </div>
 
-          {/* Map Side */}
+          {}
           <div className="sticky top-24">
             <h2 className="text-xl font-black flex items-center gap-2 text-slate-800 mb-6 ml-2">
               <MapPin size={24} className="text-red-600" /> MONITORIZARE LIVE

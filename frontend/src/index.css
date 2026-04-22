@@ -1,13 +1,13 @@
 @import "tailwindcss";
 
-/* Fix pentru a ne asigura că harta și restul paginii ocupă tot ecranul */
+
 #root, body, html {
   height: 100%;
   margin: 0;
   background-color: #f8fafc;
 }
 
-/* Fix necesar pentru Leaflet să afișeze corect tile-urile */
+
 .leaflet-container {
   width: 100%;
   height: 100%;
