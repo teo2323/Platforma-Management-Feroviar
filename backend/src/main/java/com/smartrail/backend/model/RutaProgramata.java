@@ -4,6 +4,7 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import java.time.LocalTime;
+import jakarta.persistence.Transient;
 
 @Entity
 @Table(name = "Rute_Programate")
@@ -37,6 +38,9 @@ public class RutaProgramata {
     @JsonIgnoreProperties("rutaProgramata")
     private List<OprireTraseu> opriri;
 
+    @Transient
+    private String recomandareAi;
+
     public RutaProgramata() {}
 
 
@@ -61,5 +65,7 @@ public class RutaProgramata {
     public List<OprireTraseu> getOpriri() { return opriri; }
     public void setOpriri(List<OprireTraseu> opriri) { this.opriri = opriri; }
 
+    public String getRecomandareAi() { return recomandareAi; }
+    public void setRecomandareAi(String recomandareAi) { this.recomandareAi = recomandareAi; }
 
 }
