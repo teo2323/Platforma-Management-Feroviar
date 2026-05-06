@@ -1,0 +1,6 @@
+spring.datasource.url=jdbc:postgresql://localhost:5432/smartrail
+spring.datasource.username=PUNE_AICI_USER_DB
+spring.datasource.password=PUNE_AICI_PAROLA_DB
+
+
+gemini.api.key=PUNE_AICI_CHEIA_API_NOUA
