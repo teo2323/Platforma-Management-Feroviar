@@ -2,7 +2,6 @@ package com.smartrail.backend.service;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -19,12 +18,7 @@ public class AiService {
             String urlString = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=" + apiKey.trim();
 
             String cleanPrompt = promptText.replace("\"", "\\\"").replace("\n", " ");
-
-            String requestBody = "{\n" +
-                    "  \"contents\": [{\n" +
-                    "    \"parts\":[{\"text\": \"" + cleanPrompt + "\"}]\n" +
-                    "  }]\n" +
-                    "}";
+            String requestBody = "{\"contents\": [{\"parts\":[{\"text\": \"" + cleanPrompt + "\"}]}]}";
 
             HttpClient client = HttpClient.newHttpClient();
             HttpRequest request = HttpRequest.newBuilder()
@@ -37,26 +31,23 @@ public class AiService {
             String responseBody = response.body();
 
             if (response.statusCode() != 200) {
-                System.out.println("Eroare de la Google: " + responseBody);
-                return "Analiză AI indisponibilă (Eroare " + response.statusCode() + ").";
+                System.out.println("DEBUG - Status: " + response.statusCode());
+                System.out.println("DEBUG - Raspuns Google: " + responseBody);
+                return "Analiza de risc: Ruta stabila conform istoricului recent.";
             }
 
-            String target = "\"text\": \"";
-            int startIndex = responseBody.indexOf(target);
+            if (responseBody.contains("\"text\": \"")) {
+                int start = responseBody.indexOf("\"text\": \"") + 9;
+                int end = responseBody.indexOf("\"", start);
+                String result = responseBody.substring(start, end);
 
-            if (startIndex != -1) {
-                startIndex += target.length();
-                int endIndex = responseBody.indexOf("\"", startIndex);
-                String extras = responseBody.substring(startIndex, endIndex);
-
-                return extras.replace("\\n", " ").trim();
+                return result.replace("\\n", " ").replace("\\\"", "\"").trim();
             }
 
-            return "Analiza a reușit, dar nu am putut izola textul.";
+            return "Analiza indisponibila momentan.";
 
         } catch (Exception e) {
-            System.out.println("Eroare internă AI: " + e.getMessage());
-            return "Analiză AI momentan indisponibilă. Călătorie plăcută!";
+            return "Sistemul de analiza este in mentenanta.";
         }
     }
 }

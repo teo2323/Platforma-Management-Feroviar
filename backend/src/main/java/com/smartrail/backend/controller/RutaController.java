@@ -79,6 +79,12 @@ public class RutaController {
 
             String analizaAi = aiService.genereazaAnaliza(prompt);
             ruta.setRecomandareAi(analizaAi.replace("\n", " ").trim());
+
+            try {
+                Thread.sleep(1500);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
         }
 
         return rute;
