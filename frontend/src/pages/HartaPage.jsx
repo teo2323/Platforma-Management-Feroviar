@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import L from 'leaflet';
+import { useNavigate } from 'react-router-dom';
 import 'leaflet/dist/leaflet.css';
 
 const trainIcon = new L.Icon({
@@ -47,6 +48,7 @@ const HartaPage = () => {
   const [trenuriLive, setTrenuriLive] = useState([]);
   const [calamitati, setCalamitati] = useState([]);
   const [statii, setStatii] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchStatii = async () => {
@@ -182,12 +184,12 @@ const HartaPage = () => {
 
           {trenuriLive.map((tren) => (
             <Marker 
-              key={tren.id} 
+              key={tren.id}
               position={[tren.latitudine, tren.longitudine]} 
               icon={trainIcon}
             >
               <Popup className="rounded-xl overflow-hidden shadow-2xl border-0">
-                <div className="text-center p-2 min-w-[150px]">
+                <div className="text-center p-2 min-w-[160px]">
                   <p className="font-black text-blue-600 text-sm uppercase tracking-widest mb-1">
                     Tren: {tren?.instantaCalatorie?.rutaProgramata?.tren?.idTren || "N/A"}
                   </p>
@@ -196,7 +198,7 @@ const HartaPage = () => {
                   <div className="flex flex-col gap-2 mt-3">
                     <div className="flex justify-between items-center bg-slate-50 p-2 rounded-lg">
                       <span className="text-xs font-bold text-slate-500">Viteză</span>
-                      <span className="text-xs font-black text-slate-900">{tren?.viteza} km/h</span>
+                      <span className="text-xs font-black text-slate-900">{tren?.viteza || "N/A"} km/h</span>
                     </div>
 
                     <div className="flex flex-col bg-slate-50 p-2 rounded-lg text-left gap-1">
@@ -204,7 +206,7 @@ const HartaPage = () => {
                       <div className="text-[11px] font-black text-slate-800 flex flex-col gap-1 mt-1">
                         <div className="flex items-center justify-between gap-1 border-b border-slate-100 pb-1">
                           <span className="font-medium text-slate-500 flex items-center gap-1">
-                            <span className="text-[8px]">🟢</span> Plecat din
+                            <span className="text-[8px]">🟢</span> Plecat
                           </span>
                           <span className="font-black text-slate-800">{tren?.ultimaStatie || "N/A"}</span>
                         </div>
@@ -223,6 +225,18 @@ const HartaPage = () => {
                         {tren?.instantaCalatorie?.intarziereMinute || 0} min
                       </span>
                     </div>
+
+                    <button 
+                      onClick={() => {
+                        const trainId = tren?.instantaCalatorie?.rutaProgramata?.tren?.idTren;
+                        if (trainId) {
+                          navigate(`/compozitie/${trainId}`);
+                        }
+                      }}
+                      className="mt-2 w-full bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold py-2 px-2 rounded-lg transition-colors shadow-sm cursor-pointer border-0"
+                    >
+                      Vezi Compoziție
+                    </button>
                   </div>
                 </div>
               </Popup>
