@@ -9,7 +9,9 @@ import {
   TrainFront,
   ChevronRight,
   X,
-  Users
+  Users,
+  Send,
+  MessageSquare
 } from 'lucide-react';
 
 const WagonWeb = () => {
@@ -19,6 +21,33 @@ const WagonWeb = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [selectedVagon, setSelectedVagon] = useState(null);
+
+  const [chatMessages, setChatMessages] = useState([
+    { sender: 'bot', text: 'Salut! Sunt asistentul tău feroviar SmartRail. Întreabă-mă orice despre compoziția trenurilor, clasa vagoanelor sau facilitățile acestora (aer condiționat, prize, Wi-Fi).' }
+  ]);
+  const [chatInput, setChatInput] = useState('');
+  const [sending, setSending] = useState(false);
+
+  const handleSendMessage = async (e) => {
+    e.preventDefault();
+    if (!chatInput.trim() || sending) return;
+
+    const userText = chatInput.trim();
+    setChatInput('');
+    setChatMessages(prev => [...prev, { sender: 'user', text: userText }]);
+    setSending(true);
+
+    try {
+      const res = await axios.post('http://localhost:8080/api/trenuri/chat', { message: userText });
+      const botText = res.data.response || "Nu am primit un răspuns valid de la asistent.";
+      setChatMessages(prev => [...prev, { sender: 'bot', text: botText }]);
+    } catch (err) {
+      console.error("Eroare la comunicarea cu agentul AI:", err);
+      setChatMessages(prev => [...prev, { sender: 'bot', text: "Scuze, a apărut o eroare la procesarea solicitării tale. Asigură-te că backend-ul este pornit." }]);
+    } finally {
+      setSending(false);
+    }
+  };
 
   // 1. Preluam lista de trenuri pentru dropdown
   useEffect(() => {
@@ -265,6 +294,68 @@ const WagonWeb = () => {
 
         </div>
       ) : null}
+
+      {/* AI Assistant Chat Box */}
+      <div className="bg-white/80 backdrop-blur-md p-6 md:p-8 rounded-[3rem] shadow-xl shadow-slate-200/50 border border-white max-w-3xl mx-auto space-y-6">
+        <div className="flex items-center gap-4 border-b border-slate-100 pb-4">
+          <div className="bg-blue-500/10 p-3 rounded-2xl">
+            <MessageSquare className="text-blue-600" size={24} />
+          </div>
+          <div>
+            <h4 className="text-xl font-black text-slate-800">Asistent AI Compoziție</h4>
+            <p className="text-xs text-slate-400 font-bold uppercase tracking-wider">SmartRail AI Agent</p>
+          </div>
+        </div>
+
+        {/* Chat Messages */}
+        <div className="h-64 overflow-y-auto space-y-4 pr-2 custom-scrollbar flex flex-col">
+          {chatMessages.map((msg, idx) => (
+            <div 
+              key={idx} 
+              className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'} animate-in fade-in slide-in-from-bottom-2 duration-300`}
+            >
+              <div 
+                className={`max-w-[80%] p-4 rounded-2xl font-semibold text-sm leading-relaxed shadow-sm
+                  ${msg.sender === 'user' 
+                    ? 'bg-blue-600 text-white rounded-br-none' 
+                    : 'bg-slate-100 text-slate-800 rounded-bl-none'
+                  }
+                `}
+              >
+                {msg.text}
+              </div>
+            </div>
+          ))}
+          {sending && (
+            <div className="flex justify-start items-center gap-2 text-slate-400 text-sm font-bold pl-2 animate-pulse">
+              <span className="w-2 h-2 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></span>
+              <span className="w-2 h-2 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></span>
+              <span className="w-2 h-2 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></span>
+              Asistentul scrie...
+            </div>
+          )}
+        </div>
+
+        {/* Input Form */}
+        <form onSubmit={handleSendMessage} className="flex gap-3">
+          <input
+            type="text"
+            value={chatInput}
+            onChange={(e) => setChatInput(e.target.value)}
+            placeholder="Întreabă AI-ul despre trenuri (ex: Care trenuri au aer condiționat?)"
+            className="flex-1 px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl font-semibold outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all text-slate-700 placeholder:text-slate-400 text-sm"
+            disabled={sending}
+          />
+          <button
+            type="submit"
+            disabled={sending || !chatInput.trim()}
+            className="px-5 py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white font-bold rounded-xl transition-all shadow-md flex items-center justify-center gap-2 text-sm cursor-pointer border-0"
+          >
+            <Send size={16} />
+            Trimite
+          </button>
+        </form>
+      </div>
 
     </div>
   );
