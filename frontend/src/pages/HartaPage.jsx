@@ -13,7 +13,7 @@ const trainIcon = new L.Icon({
 
 const HartaPage = () => {
   const [trenuriLive, setTrenuriLive] = useState([]);
-  const [calamitati, setCalamitati] = useState([]); // Aici vom stoca calamitatile de la backend
+  //const [calamitati, setCalamitati] = useState([]); // Aici vom stoca calamitatile de la backend
 
   useEffect(() => {
     const fetchLiveMap = async () => {

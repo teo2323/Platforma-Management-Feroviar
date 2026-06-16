@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import HomePage from './pages/HomePage';
 import HartaPage from './pages/HartaPage';
+import WagonWeb from './pages/WagonWeb';
 
 const App = () => { 
   return (
@@ -15,6 +16,7 @@ const App = () => {
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/harta" element={<HartaPage />} />
+            <Route path="/compozitie" element={<WagonWeb />} />
           </Routes>
         </main>
       </div>

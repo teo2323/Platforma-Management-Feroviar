@@ -21,7 +21,7 @@ const Navbar = () => {
         </h1>
 
         {/* Meniu de tip "Pill" cu fundal semi-transparent si feedback vizual activ */}
-        <div className="flex gap-2 sm:gap-4 font-bold bg-slate-800/60 p-1.5 rounded-2xl border border-slate-700/50 shadow-inner">
+        <div className="flex gap-2 sm:gap-4 font-bold bg-slate-800/60 p-1.5 rounded-2xl border border-slate-700/50 shadow-inner flex-wrap justify-center">
           <Link 
             to="/" 
             className={`px-5 py-2.5 rounded-xl transition-all duration-300 ${isActive('/') ? 'bg-blue-600 text-white shadow-md shadow-blue-500/30' : 'text-slate-400 hover:text-white hover:bg-slate-700/50'}`}
@@ -32,7 +32,13 @@ const Navbar = () => {
             to="/harta" 
             className={`px-5 py-2.5 rounded-xl transition-all duration-300 ${isActive('/harta') ? 'bg-blue-600 text-white shadow-md shadow-blue-500/30' : 'text-slate-400 hover:text-white hover:bg-slate-700/50'}`}
           >
-            Hartă Live & Calamități
+            Hartă Live
+          </Link>
+          <Link 
+            to="/compozitie" 
+            className={`px-5 py-2.5 rounded-xl transition-all duration-300 ${isActive('/compozitie') ? 'bg-blue-600 text-white shadow-md shadow-blue-500/30' : 'text-slate-400 hover:text-white hover:bg-slate-700/50'}`}
+          >
+            Compoziție Trenuri
           </Link>
         </div>
 
