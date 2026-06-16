@@ -4,7 +4,7 @@ import Navbar from './components/Navbar';
 import HomePage from './pages/HomePage';
 import HartaPage from './pages/HartaPage';
 
-const App = () => { //mesaj de test
+const App = () => { 
   return (
     <Router>
       {}
