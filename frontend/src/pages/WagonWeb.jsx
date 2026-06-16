@@ -28,7 +28,7 @@ const WagonWeb = () => {
   const [selectedVagon, setSelectedVagon] = useState(null);
 
   const [chatMessages, setChatMessages] = useState([
-    { sender: 'bot', text: 'Salut! Sunt asistentul tău feroviar SmartRail. Întreabă-mă orice despre compoziția trenurilor, clasa vagoanelor sau facilitățile acestora (aer condiționat, prize, Wi-Fi).' }
+    { sender: 'bot', text: 'Salut! Sunt asistentul platformei de management feroviar. Întreabă-mă orice despre compoziția trenurilor, clasa vagoanelor sau facilitățile acestora (aer condiționat, prize, Wi-Fi).' }
   ]);
   const [chatInput, setChatInput] = useState('');
   const [sending, setSending] = useState(false);
@@ -325,7 +325,7 @@ const WagonWeb = () => {
           </div>
           <div>
             <h4 className="text-xl font-black text-neutral-100">Asistent AI Compoziție</h4>
-            <p className="text-xs text-neutral-400 font-bold uppercase tracking-wider">SmartRail AI Agent</p>
+            <p className="text-xs text-neutral-400 font-bold uppercase tracking-wider">AI Agent Platforma Management Feroviar</p>
           </div>
         </div>
 

@@ -1,47 +1,76 @@
 import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { Train } from 'lucide-react';
+import { NavLink } from 'react-router-dom';
+import { Train, Map, LayoutDashboard, TrainFront } from 'lucide-react';
 
 const Navbar = () => {
-  const location = useLocation();
-  const isActive = (path) => location.pathname === path;
-
   return (
-    <nav className="bg-slate-900/80 backdrop-blur-xl text-white p-4 shadow-[0_10px_30px_rgba(0,0,0,0.2)] sticky top-0 z-[1001] border-b border-white/10 transition-all duration-300">
-      <div className="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4 sm:gap-0">
-        
-        {/* Logo imbunatatit cu efect de hover pe iconita si text gradient */}
-        <h1 className="text-2xl font-black tracking-tighter italic flex items-center group cursor-pointer">
-          <div className="bg-blue-600 p-2 rounded-xl mr-3 group-hover:-rotate-12 group-hover:scale-110 transition-transform shadow-lg shadow-blue-500/30">
-            <Train className="text-white" size={24} />
+    <nav className="sticky top-0 z-50 w-full bg-neutral-900/95 backdrop-blur-md border-b border-neutral-800 shadow-lg shadow-black/50">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-24">
+          
+          {/* Logo și Titlu */}
+          <div className="flex-shrink-0 flex items-center gap-4">
+            <div className="bg-gradient-to-br from-yellow-400 to-yellow-500 p-3 rounded-2xl shadow-lg shadow-yellow-500/20 border border-yellow-300/50">
+              <TrainFront className="text-black" size={32} />
+            </div>
+            <div className="flex flex-col">
+              <span className="font-black text-xl md:text-2xl text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-yellow-600 tracking-tighter uppercase leading-none">
+                Platforma de Management
+              </span>
+              <span className="text-neutral-400 font-bold text-sm tracking-widest uppercase">
+                Feroviar
+              </span>
+            </div>
           </div>
-          <span className="bg-gradient-to-r from-white to-slate-400 bg-clip-text text-transparent drop-shadow-sm">
-            SMART RAIL
-          </span>
-        </h1>
 
-        {/* Meniu de tip "Pill" cu fundal semi-transparent si feedback vizual activ */}
-        <div className="flex gap-2 sm:gap-4 font-bold bg-slate-800/60 p-1.5 rounded-2xl border border-slate-700/50 shadow-inner flex-wrap justify-center">
-          <Link 
-            to="/" 
-            className={`px-5 py-2.5 rounded-xl transition-all duration-300 ${isActive('/') ? 'bg-blue-600 text-white shadow-md shadow-blue-500/30' : 'text-slate-400 hover:text-white hover:bg-slate-700/50'}`}
-          >
-            Căutare Rute
-          </Link>
-          <Link 
-            to="/harta" 
-            className={`px-5 py-2.5 rounded-xl transition-all duration-300 ${isActive('/harta') ? 'bg-blue-600 text-white shadow-md shadow-blue-500/30' : 'text-slate-400 hover:text-white hover:bg-slate-700/50'}`}
-          >
-            Hartă Live
-          </Link>
-          <Link 
-            to="/compozitie" 
-            className={`px-5 py-2.5 rounded-xl transition-all duration-300 ${isActive('/compozitie') ? 'bg-blue-600 text-white shadow-md shadow-blue-500/30' : 'text-slate-400 hover:text-white hover:bg-slate-700/50'}`}
-          >
-            Compoziție Trenuri
-          </Link>
+          {/* Butoane Navigație (Desktop) */}
+          <div className="hidden md:block">
+            <div className="ml-10 flex items-baseline space-x-3">
+              <NavLink
+                to="/"
+                className={({ isActive }) =>
+                  `flex items-center gap-2 px-5 py-3 rounded-xl text-sm font-black uppercase tracking-widest transition-all duration-300 ${
+                    isActive
+                      ? 'bg-yellow-500 text-black shadow-[0_0_20px_rgba(250,204,21,0.3)] scale-105'
+                      : 'text-neutral-400 hover:bg-neutral-800 hover:text-yellow-400 active:scale-95'
+                  }`
+                }
+              >
+                <LayoutDashboard size={20} />
+                Acasă
+              </NavLink>
+
+              <NavLink
+                to="/harta"
+                className={({ isActive }) =>
+                  `flex items-center gap-2 px-5 py-3 rounded-xl text-sm font-black uppercase tracking-widest transition-all duration-300 ${
+                    isActive
+                      ? 'bg-yellow-500 text-black shadow-[0_0_20px_rgba(250,204,21,0.3)] scale-105'
+                      : 'text-neutral-400 hover:bg-neutral-800 hover:text-yellow-400 active:scale-95'
+                  }`
+                }
+              >
+                <Map size={20} />
+                Hartă Live
+              </NavLink>
+
+              <NavLink
+                to="/compozitie"
+                className={({ isActive }) =>
+                  `flex items-center gap-2 px-5 py-3 rounded-xl text-sm font-black uppercase tracking-widest transition-all duration-300 ${
+                    isActive
+                      ? 'bg-yellow-500 text-black shadow-[0_0_20px_rgba(250,204,21,0.3)] scale-105'
+                      : 'text-neutral-400 hover:bg-neutral-800 hover:text-yellow-400 active:scale-95'
+                  }`
+                }
+              >
+                <Train size={20} />
+                Compoziție
+              </NavLink>
+            </div>
+          </div>
+          
         </div>
-
       </div>
     </nav>
   );
