@@ -12,6 +12,8 @@ public interface InstantaCalatorieRepository extends JpaRepository<InstantaCalat
 
     List<InstantaCalatorie> findByRutaProgramata_IdRuta(Integer idRuta);
 
+    List<InstantaCalatorie> findByStare(String stare);
+
     @Query(value = "SELECT tip_incident FROM Alerte_Live WHERE instanta_id = ?1", nativeQuery = true)
     List<String> gasesteAlertePentruInstanta(Integer idInstanta);
 }

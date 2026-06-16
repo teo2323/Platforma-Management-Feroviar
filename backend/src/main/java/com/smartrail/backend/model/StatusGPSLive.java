@@ -25,7 +25,22 @@ public class StatusGPSLive {
     @Column(name = "ultima_actualizare", insertable = false, updatable = false)
     private LocalDateTime ultimaActualizare;
 
+    @Transient
+    private Integer viteza;
+
+    @Transient
+    private String ultimaStatie;
+
+    @Transient
+    private String urmatoareaStatie;
+
     public StatusGPSLive() {}
+
+    public String getUltimaStatie() { return ultimaStatie; }
+    public void setUltimaStatie(String ultimaStatie) { this.ultimaStatie = ultimaStatie; }
+
+    public String getUrmatoareaStatie() { return urmatoareaStatie; }
+    public void setUrmatoareaStatie(String urmatoareaStatie) { this.urmatoareaStatie = urmatoareaStatie; }
 
     public Integer getId() { return id; }
     public void setId(Integer id) { this.id = id; }
@@ -41,4 +56,7 @@ public class StatusGPSLive {
 
     public LocalDateTime getUltimaActualizare() { return ultimaActualizare; }
     public void setUltimaActualizare(LocalDateTime ultimaActualizare) { this.ultimaActualizare = ultimaActualizare; }
+
+    public Integer getViteza() { return viteza; }
+    public void setViteza(Integer viteza) { this.viteza = viteza; }
 }
