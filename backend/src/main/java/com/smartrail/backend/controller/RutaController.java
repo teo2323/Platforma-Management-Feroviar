@@ -67,14 +67,20 @@ public class RutaController {
 
             String prompt;
             if (curseAnalizate == 0) {
-                prompt = "Scrie un mesaj scurt (max 15 cuvinte) cu drum bun pentru ruta " + plecare + " - " + destinatie + ".";
+                prompt = "[INST] Scrie un mesaj scurt (max 15 cuvinte) cu drum bun pentru ruta " + plecare + " - " + destinatie + ". [/INST]";
             } else {
                 int medieIntarziere = totalMinute / curseAnalizate;
 
-                prompt = "Esti analist de risc feroviar pentru ruta " + plecare + " -> " + destinatie + ". " +
-                        "Date statistice exacte: intarziere minima " + minIntarziere + " min, medie " + medieIntarziere + " min, maxima " + maxIntarziere + " min. " +
-                        "Istoric detaliat pentru tipare: " + dateBrute.toString() + " " +
-                        "Scrie o singura propozitie (maxim 35 cuvinte) pentru un pasager. REGULA STRICTA: Include in text OBLIGATORIU cele 3 valori numerice (minima, medie, maxima) si adauga o concluzie inteligenta observand tiparele din istoric (ex: iarna sunt probleme din cauza zapezii).";
+                prompt = "[INST] Ești un asistent de călătorie inteligent. Analizează istoricul curselor și răspunde în limba română printr-o singură propoziție scurtă (maxim 30 de cuvinte) adresată pasagerului.\n" +
+                        "Trebuie să incluzi obligatoriu:\n" +
+                        "1. Valorile statistice exacte: minim " + minIntarziere + " min, medie " + medieIntarziere + " min, maxim " + maxIntarziere + " min de întârziere.\n" +
+                        "2. O concluzie scurtă bazată pe un tipar observat în istoricul curselor (ex: întârzieri mari iarna, probleme în weekend-uri sau risc de copaci căzuți).\n\n" +
+                        "Date statistice:\n" +
+                        "- Ruta: " + plecare + " - " + destinatie + "\n" +
+                        "- Minimă: " + minIntarziere + " min, Medie: " + medieIntarziere + " min, Maximă: " + maxIntarziere + " min\n" +
+                        "- Istoric detaliat: " + dateBrute.toString().trim() + "\n\n" +
+                        "Format dorit: \"Întârzierea pe această rută este de minim [minim] min, medie [medie] min și maxim [maxim] min; observăm că [tipar/concluzie din istoric].\"\n" +
+                        "Răspunsul tău exact în acest format: [/INST]";
             }
 
             String analizaAi = aiService.genereazaAnaliza(prompt);
