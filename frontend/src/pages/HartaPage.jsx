@@ -94,23 +94,23 @@ const HartaPage = () => {
     <div className="max-w-7xl mx-auto p-6 py-10">
       
       {/* Header imbunatatit pentru Harta */}
-      <div className="flex items-center gap-5 mb-10 bg-white/60 backdrop-blur-md p-6 rounded-[2rem] border border-white shadow-lg shadow-slate-200/50">
-        <div className="bg-red-500/10 p-4 rounded-2xl relative">
-          <div className="absolute inset-0 bg-red-400/20 rounded-2xl animate-ping"></div>
+      <div className="flex items-center gap-5 mb-10 bg-neutral-800/80 backdrop-blur-md p-6 rounded-[2rem] border border-neutral-700 shadow-lg shadow-black/50">
+        <div className="bg-yellow-500/10 p-4 rounded-2xl relative">
+          <div className="absolute inset-0 bg-yellow-400/20 rounded-2xl animate-ping"></div>
           <span className="text-3xl relative z-10">📡</span>
         </div>
         <div>
-          <h2 className="text-3xl md:text-4xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-slate-800 to-blue-800 drop-shadow-sm">
+          <h2 className="text-3xl md:text-4xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-yellow-600 drop-shadow-sm">
             Hartă Live & Calamități
           </h2>
-          <p className="text-slate-500 font-medium mt-1">
+          <p className="text-neutral-400 font-medium mt-1">
             Urmărește trenurile în timp real și monitorizează eventualele incidente de pe traseu.
           </p>
         </div>
       </div>
 
       {/* Container-ul hartii cu border mare (Efect de rama), shadow avansat si hover states */}
-      <div className="h-[75vh] w-full rounded-[3rem] md:rounded-[4rem] overflow-hidden shadow-[0_20px_50px_rgba(8,_112,_184,_0.15)] border-[8px] md:border-[12px] border-white/80 bg-slate-100 z-0 relative hover:shadow-[0_20px_50px_rgba(8,_112,_184,_0.25)] hover:border-white transition-all duration-500">
+      <div className="h-[75vh] w-full rounded-[3rem] md:rounded-[4rem] overflow-hidden shadow-[0_20px_50px_rgba(250,_204,_21,_0.15)] border-[8px] md:border-[12px] border-neutral-800/80 bg-neutral-900 z-0 relative hover:shadow-[0_20px_50px_rgba(250,_204,_21,_0.25)] hover:border-neutral-700 transition-all duration-500">
         <MapContainer center={[45.9432, 24.9668]} zoom={7} style={{ height: '100%', width: '100%' }}>
           <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
           
@@ -119,7 +119,7 @@ const HartaPage = () => {
             if (!coords) return null;
             
             const stationIcon = L.divIcon({
-              html: `<div style="font-size: 20px; line-height: 1; text-shadow: 0 0 4px white; cursor: pointer;" title="${statie.numeStatie}">🚉</div>`,
+              html: `<div style="font-size: 20px; line-height: 1; text-shadow: 0 0 4px #eab308; cursor: pointer;" title="${statie.numeStatie}">🚉</div>`,
               className: 'station-icon',
               iconSize: [24, 24],
               iconAnchor: [12, 12],
@@ -132,7 +132,7 @@ const HartaPage = () => {
                 icon={stationIcon}
               >
                 <Popup className="rounded-xl overflow-hidden shadow-md border-0">
-                  <div className="p-2 text-center font-black text-slate-800 text-xs">
+                  <div className="p-2 text-center font-black text-black bg-yellow-400 rounded-md text-xs">
                     Gara: {statie.numeStatie}
                   </div>
                 </Popup>
@@ -142,7 +142,7 @@ const HartaPage = () => {
           
           {calamitati.map((cal, idx) => {
             const calamityIcon = L.divIcon({
-              html: `<div style="font-size: 28px; line-height: 1; text-shadow: 0 0 5px white; cursor: pointer;">${cal.icon}</div>`,
+              html: `<div style="font-size: 28px; line-height: 1; text-shadow: 0 0 5px #ef4444; cursor: pointer;">${cal.icon}</div>`,
               className: 'calamity-icon',
               iconSize: [30, 30],
               iconAnchor: [15, 15],
@@ -154,24 +154,24 @@ const HartaPage = () => {
                 icon={calamityIcon}
               >
                 <Popup className="rounded-[1.5rem] overflow-hidden shadow-2xl border-0">
-                  <div className="text-center p-2 min-w-[170px]">
-                    <p className="font-black text-red-600 text-sm uppercase tracking-widest mb-1 flex items-center justify-center gap-1">
+                  <div className="text-center p-2 min-w-[170px] bg-neutral-900 text-neutral-200 rounded-xl">
+                    <p className="font-black text-red-500 text-sm uppercase tracking-widest mb-1 flex items-center justify-center gap-1">
                       🚨 Incident
                     </p>
-                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">
+                    <p className="text-[10px] font-black text-neutral-400 uppercase tracking-widest leading-none mb-1">
                       {cal.tipCalamitate.replace(/_/g, ' ')}
                     </p>
-                    <div className="h-[2px] w-full bg-gradient-to-r from-transparent via-red-200 to-transparent my-2"></div>
+                    <div className="h-[2px] w-full bg-gradient-to-r from-transparent via-red-500/50 to-transparent my-2"></div>
                     
                     <div className="flex flex-col gap-2 mt-3">
-                      <div className="flex justify-between items-center bg-slate-50 p-2 rounded-lg">
-                        <span className="text-xs font-bold text-slate-500">Stație</span>
-                        <span className="text-xs font-black text-slate-900">{cal.numeStatie}</span>
+                      <div className="flex justify-between items-center bg-neutral-800 p-2 rounded-lg">
+                        <span className="text-xs font-bold text-neutral-400">Stație</span>
+                        <span className="text-xs font-black text-neutral-100">{cal.numeStatie}</span>
                       </div>
                       
-                      <div className="flex justify-between items-center bg-red-50 p-2 rounded-lg">
+                      <div className="flex justify-between items-center bg-red-950/50 p-2 rounded-lg border border-red-900/50">
                         <span className="text-xs font-bold text-red-400">Raportat</span>
-                        <span className="text-xs font-black text-red-600">
+                        <span className="text-xs font-black text-red-500">
                           {new Date(cal.dataAparitie).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
                         </span>
                       </div>
@@ -189,39 +189,39 @@ const HartaPage = () => {
               icon={trainIcon}
             >
               <Popup className="rounded-xl overflow-hidden shadow-2xl border-0">
-                <div className="text-center p-2 min-w-[160px]">
-                  <p className="font-black text-blue-600 text-sm uppercase tracking-widest mb-1">
+                <div className="text-center p-2 min-w-[160px] bg-neutral-900 text-neutral-200 rounded-xl">
+                  <p className="font-black text-yellow-400 text-sm uppercase tracking-widest mb-1">
                     Tren: {tren?.instantaCalatorie?.rutaProgramata?.tren?.idTren || "N/A"}
                   </p>
-                  <div className="h-[2px] w-full bg-gradient-to-r from-transparent via-slate-200 to-transparent my-2"></div>
+                  <div className="h-[2px] w-full bg-gradient-to-r from-transparent via-neutral-700 to-transparent my-2"></div>
                   
                   <div className="flex flex-col gap-2 mt-3">
-                    <div className="flex justify-between items-center bg-slate-50 p-2 rounded-lg">
-                      <span className="text-xs font-bold text-slate-500">Viteză</span>
-                      <span className="text-xs font-black text-slate-900">{tren?.viteza || "N/A"} km/h</span>
+                    <div className="flex justify-between items-center bg-neutral-800 p-2 rounded-lg">
+                      <span className="text-xs font-bold text-neutral-400">Viteză</span>
+                      <span className="text-xs font-black text-neutral-100">{tren?.viteza || "N/A"} km/h</span>
                     </div>
 
-                    <div className="flex flex-col bg-slate-50 p-2 rounded-lg text-left gap-1">
-                      <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider leading-none">Status Traseu</span>
-                      <div className="text-[11px] font-black text-slate-800 flex flex-col gap-1 mt-1">
-                        <div className="flex items-center justify-between gap-1 border-b border-slate-100 pb-1">
-                          <span className="font-medium text-slate-500 flex items-center gap-1">
-                            <span className="text-[8px]">🟢</span> Plecat
+                    <div className="flex flex-col bg-neutral-800 p-2 rounded-lg text-left gap-1">
+                      <span className="text-[10px] font-bold text-neutral-500 uppercase tracking-wider leading-none">Status Traseu</span>
+                      <div className="text-[11px] font-black text-neutral-300 flex flex-col gap-1 mt-1">
+                        <div className="flex items-center justify-between gap-1 border-b border-neutral-700 pb-1">
+                          <span className="font-medium text-neutral-400 flex items-center gap-1">
+                            <span className="text-[8px]">🟡</span> Plecat
                           </span>
-                          <span className="font-black text-slate-800">{tren?.ultimaStatie || "N/A"}</span>
+                          <span className="font-black text-neutral-100">{tren?.ultimaStatie || "N/A"}</span>
                         </div>
                         <div className="flex items-center justify-between gap-1">
-                          <span className="font-medium text-slate-500 flex items-center gap-1">
-                            <span className="text-[8px]">🔵</span> Urmează
+                          <span className="font-medium text-neutral-400 flex items-center gap-1">
+                            <span className="text-[8px]">⚫</span> Urmează
                           </span>
-                          <span className="font-black text-slate-800">{tren?.urmatoareaStatie || "N/A"}</span>
+                          <span className="font-black text-neutral-100">{tren?.urmatoareaStatie || "N/A"}</span>
                         </div>
                       </div>
                     </div>
                     
-                    <div className="flex justify-between items-center bg-red-50 p-2 rounded-lg">
-                      <span className="text-xs font-bold text-red-400">Întârziere</span>
-                      <span className="text-xs font-black text-red-600 italic">
+                    <div className="flex justify-between items-center bg-yellow-900/30 p-2 rounded-lg border border-yellow-700/50">
+                      <span className="text-xs font-bold text-yellow-500">Întârziere</span>
+                      <span className="text-xs font-black text-yellow-400 italic">
                         {tren?.instantaCalatorie?.intarziereMinute || 0} min
                       </span>
                     </div>
@@ -233,7 +233,7 @@ const HartaPage = () => {
                           navigate(`/compozitie/${trainId}`);
                         }
                       }}
-                      className="mt-2 w-full bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold py-2 px-2 rounded-lg transition-colors shadow-sm cursor-pointer border-0"
+                      className="mt-2 w-full bg-yellow-500 hover:bg-yellow-400 text-black text-xs font-bold py-2 px-2 rounded-lg transition-colors shadow-sm cursor-pointer border-0"
                     >
                       Vezi Compoziție
                     </button>
