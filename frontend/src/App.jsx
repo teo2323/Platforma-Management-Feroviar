@@ -10,7 +10,7 @@ const App = () => {
     <Router>
       {}
       
-      <div className="min-h-screen bg-[radial-gradient(ellipse_at_top_left,_var(--tw-gradient-stops))] from-slate-50 via-slate-100 to-blue-50/50 font-sans text-slate-900 selection:bg-blue-200 selection:text-blue-900">
+      <div className="min-h-screen bg-[radial-gradient(ellipse_at_top_left,_var(--tw-gradient-stops))] from-neutral-900 via-neutral-800 to-black font-sans text-neutral-100 selection:bg-yellow-400 selection:text-black">
         <Navbar />
         <main className="transition-all duration-500 ease-in-out">
           <Routes>
