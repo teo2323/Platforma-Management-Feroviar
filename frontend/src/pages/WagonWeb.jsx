@@ -6,6 +6,9 @@ import {
   Wifi, 
   Plug, 
   BaggageClaim, 
+  Bike,
+  Coffee,
+  Utensils,
   Info, 
   TrainFront,
   ChevronRight,
@@ -99,7 +102,43 @@ const WagonWeb = () => {
     if (name.includes('wi-fi') || name.includes('wifi')) return <Wifi size={16} />;
     if (name.includes('priza') || name.includes('220v')) return <Plug size={16} />;
     if (name.includes('bagaje')) return <BaggageClaim size={16} />;
+    if (name.includes('biciclet')) return <Bike size={16} />;
+    if (name.includes('priza') || name.includes('prize') || name.includes('220v')) return <Plug size={16} />;
+    if (name.includes('bar')) return <Coffee size={16} />;
+    if (name.includes('restaurant')) return <Utensils size={16} />;
     return <Info size={16} />;
+  };
+
+  // Helper pentru a asocia o locomotiva statica (1-9) in functie de pozitia trenului in lista
+  const getLocoImage = (idTren) => {
+    if (!idTren || trenuri.length === 0) return "/locomotiva1.png";
+    // Gasim pe a cata pozitie se afla trenul selectat in lista de trenuri (0-8)
+    const index = trenuri.findIndex(t => t.idTren === idTren);
+    const locoIndex = index >= 0 ? (index % 9) + 1 : 1; // Atribuim direct de la 1 la 9
+    return `/locomotiva${locoIndex}.png`;
+  };
+
+  // Helper pentru a genera numele pozei vagonului bazat pe facilitati
+  const getWagonImage = (vagon) => {
+    if (!vagon.facilitati || vagon.facilitati.length === 0) {
+      return vagon.clasa === 1 ? "/vagon-clasa1.png" : "/vagon-clasa2.png";
+    }
+
+    // Standardizăm numele facilităților în "tag-uri" scurte
+    const sanitizeFacility = (fac) => {
+      const name = fac.toLowerCase();
+      if (name.includes('ac') || name.includes('aer conditionat')) return 'ac';
+      if (name.includes('wi-fi') || name.includes('wifi')) return 'wifi';
+      if (name.includes('priza') || name.includes('220v')) return 'prize';
+      if (name.includes('bagaje')) return 'bagaje';
+      return name.replace(/[^a-z0-9]/g, ''); // fallback fallback pentru eventuale alte facilitati
+    };
+
+    // Extragem tag-urile, le eliminăm pe cele invalide/duplicate și le SORTĂM alfabetic
+    const sanitizedFacs = vagon.facilitati.map(sanitizeFacility).filter(Boolean);
+    const uniqueSortedFacs = [...new Set(sanitizedFacs)].sort();
+    
+    return `/${uniqueSortedFacs.join('-')}.png`;
   };
 
   return (
@@ -178,23 +217,18 @@ const WagonWeb = () => {
             <div className="flex items-end overflow-x-auto pb-8 pt-4 custom-scrollbar gap-2 snap-x">
               
               {/* Locomotiva */}
-              <div className="snap-start shrink-0 relative flex flex-col items-center justify-end h-40 w-48 bg-gradient-to-tr from-slate-700 to-slate-600 rounded-tl-3xl rounded-tr-lg rounded-b-md shadow-lg border-b-4 border-slate-900 z-10">
-                 <div className="absolute top-4 right-4 w-6 h-6 bg-yellow-300 rounded-full shadow-[0_0_15px_rgba(253,224,71,0.8)]"></div>
-                 <div className="absolute top-1/2 left-4 w-12 h-10 bg-slate-800/80 rounded-sm"></div>
-                 <div className="text-white/50 font-black text-2xl tracking-tighter absolute bottom-4 left-4">LOCO</div>
-                 {/* Roti locomotiva */}
-                 <div className="absolute -bottom-4 flex gap-4">
-                    <div className="w-8 h-8 rounded-full border-4 border-slate-600 bg-slate-800"></div>
-                    <div className="w-8 h-8 rounded-full border-4 border-slate-600 bg-slate-800"></div>
-                    <div className="w-8 h-8 rounded-full border-4 border-slate-600 bg-slate-800"></div>
-                 </div>
+              <div className="snap-start shrink-0 relative flex items-end justify-center h-40 w-56 z-10">
+                <img 
+                  src={getLocoImage(trenData.idTren)} 
+                  alt="Locomotiva" 
+                  className="object-contain h-full w-full drop-shadow-xl" 
+                  onError={(e) => { e.target.src = 'https://cdn-icons-png.flaticon.com/512/3554/3554308.png'; }} 
+                />
+                <div className="absolute top-2 left-4 bg-slate-800/80 text-white text-xs font-black px-2 py-1 rounded shadow-sm backdrop-blur-sm">LOCO</div>
               </div>
 
-              {/* Legatura Locomotiva-Vagon */}
-              <div className="w-4 h-2 bg-slate-800 shrink-0 mb-4 rounded-sm"></div>
-
               {/* Vagoanele */}
-              {trenData.vagoane?.map((vagon, index) => {
+              {trenData.vagoane?.map((vagon) => {
                 const isClasa1 = vagon.clasa === 1;
                 const isSelected = selectedVagon?.id_vagon === vagon.id_vagon;
                 
@@ -202,43 +236,30 @@ const WagonWeb = () => {
                   <React.Fragment key={vagon.id_vagon}>
                     <div 
                       onClick={() => setSelectedVagon(vagon)}
-                      className={`snap-start shrink-0 relative h-36 w-64 bg-slate-50 rounded-t-xl rounded-b-md border-2 cursor-pointer transition-all duration-300 hover:-translate-y-2 hover:shadow-xl
-                        ${isSelected ? 'border-blue-500 shadow-xl shadow-blue-500/20 scale-105 z-20' : 'border-slate-300 shadow-md z-10'}
+                      className={`snap-start shrink-0 relative h-36 w-64 cursor-pointer transition-all duration-300 hover:-translate-y-2
+                        ${isSelected ? 'scale-105 z-20 drop-shadow-[0_10px_15px_rgba(59,130,246,0.5)]' : 'drop-shadow-md z-10 hover:drop-shadow-xl'}
                       `}
                     >
-                      {/* Banda de clasa */}
-                      <div className={`absolute top-0 left-0 w-full h-3 rounded-t-[10px] ${isClasa1 ? 'bg-yellow-400' : 'bg-blue-500'}`}></div>
+                      <img 
+                        src={getWagonImage(vagon)} 
+                        src={isClasa1 ? "/vagon-clasa1.png" : "/vagon-clasa2.png"} 
+                        alt={`Vagon Clasa ${vagon.clasa}`} 
+                        className={`object-contain h-full w-full rounded-xl transition-all ${isSelected ? 'ring-4 ring-blue-500 bg-blue-50' : 'bg-transparent'}`}
+                        onError={(e) => { 
+                          e.target.onerror = null; // Previne o buclă infinită dacă nici imaginile de rezervă nu există
+                          e.target.src = isClasa1 ? "/vagon-clasa1.png" : "/vagon-clasa2.png"; 
+                          e.target.src = 'https://cdn-icons-png.flaticon.com/512/5850/5850558.png'; 
+                        }}
+                      />
                       
-                      {/* Ferestre */}
-                      <div className="absolute top-6 left-0 w-full flex justify-evenly px-2">
-                        {[...Array(4)].map((_, i) => (
-                           <div key={i} className={`w-10 h-8 rounded-sm ${isSelected ? 'bg-blue-100' : 'bg-slate-200'} border-b-2 border-slate-300`}></div>
-                        ))}
-                      </div>
-
-                      {/* Info vagon pe exterior */}
-                      <div className="absolute bottom-3 left-4 right-4 flex justify-between items-end">
-                        <div className="font-black text-3xl text-slate-800 tracking-tighter opacity-80">{vagon.numarVagon}</div>
-                        <div className={`text-xs font-bold px-2 py-1 rounded-md ${isClasa1 ? 'bg-yellow-100 text-yellow-800' : 'bg-blue-100 text-blue-800'}`}>
+                      {/* Info vagon (numar si clasa) suprapus peste imagine */}
+                      <div className="absolute top-2 left-2 bg-white/90 backdrop-blur-md px-2 py-1 rounded-lg shadow-sm border border-slate-200 flex flex-col items-center">
+                        <span className="font-black text-lg text-slate-800 leading-none">{vagon.numarVagon}</span>
+                        <span className={`text-[10px] font-black uppercase tracking-wider ${isClasa1 ? 'text-yellow-600' : 'text-blue-600'}`}>
                           Clasa {vagon.clasa}
-                        </div>
-                      </div>
-
-                      {/* Roti vagon */}
-                      <div className="absolute -bottom-3 left-4 flex gap-1">
-                        <div className="w-6 h-6 rounded-full border-[3px] border-slate-400 bg-slate-700"></div>
-                        <div className="w-6 h-6 rounded-full border-[3px] border-slate-400 bg-slate-700"></div>
-                      </div>
-                      <div className="absolute -bottom-3 right-4 flex gap-1">
-                        <div className="w-6 h-6 rounded-full border-[3px] border-slate-400 bg-slate-700"></div>
-                        <div className="w-6 h-6 rounded-full border-[3px] border-slate-400 bg-slate-700"></div>
+                        </span>
                       </div>
                     </div>
-
-                    {/* Cuplaj intre vagoane (daca nu e ultimul) */}
-                    {index < trenData.vagoane.length - 1 && (
-                      <div className="w-4 h-2 bg-slate-600 shrink-0 mb-4 rounded-sm"></div>
-                    )}
                   </React.Fragment>
                 );
               })}
