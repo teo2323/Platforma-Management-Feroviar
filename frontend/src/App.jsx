@@ -4,10 +4,11 @@ import Navbar from './components/Navbar';
 import HomePage from './pages/HomePage';
 import HartaPage from './pages/HartaPage';
 
-const App = () => {
+const App = () => { 
   return (
     <Router>
-      {/* Am inlocuit fundalul simplu cu un gradient subtil si am adaugat o culoare custom pentru selectia textului */}
+      {}
+      
       <div className="min-h-screen bg-[radial-gradient(ellipse_at_top_left,_var(--tw-gradient-stops))] from-slate-50 via-slate-100 to-blue-50/50 font-sans text-slate-900 selection:bg-blue-200 selection:text-blue-900">
         <Navbar />
         <main className="transition-all duration-500 ease-in-out">
