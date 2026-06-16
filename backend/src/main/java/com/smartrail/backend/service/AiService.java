@@ -23,15 +23,32 @@ public class AiService {
     private String ollamaModel;
 
     public String genereazaAnaliza(String promptText) {
-        try {
-            if ("ollama".equalsIgnoreCase(aiProvider)) {
+        if ("ollama".equalsIgnoreCase(aiProvider)) {
+            try {
+                System.out.println("Incercare generare analiza cu Ollama...");
                 return genereazaAnalizaOllama(promptText);
-            } else {
-                return genereazaAnalizaGemini(promptText);
+            } catch (Exception e) {
+                System.err.println("Eroare generare analiza cu Ollama: " + e.getMessage() + ". Incercare fallback pe Gemini...");
+                try {
+                    return genereazaAnalizaGemini(promptText);
+                } catch (Exception ex) {
+                    System.err.println("Eroare generare analiza si cu Gemini (fallback): " + ex.getMessage());
+                    return "Analiza de risc: Ruta stabila conform istoricului recent.";
+                }
             }
-        } catch (Exception e) {
-            System.err.println("Eroare generare analiza AI (" + aiProvider + "): " + e.getMessage());
-            return "Sistemul de analiza este in mentenanta (eroare locala).";
+        } else {
+            try {
+                System.out.println("Incercare generare analiza cu Gemini...");
+                return genereazaAnalizaGemini(promptText);
+            } catch (Exception e) {
+                System.err.println("Eroare generare analiza cu Gemini: " + e.getMessage() + ". Incercare fallback pe Ollama...");
+                try {
+                    return genereazaAnalizaOllama(promptText);
+                } catch (Exception ex) {
+                    System.err.println("Eroare generare analiza si cu Ollama (fallback): " + ex.getMessage());
+                    return "Analiza de risc: Ruta stabila conform istoricului recent.";
+                }
+            }
         }
     }
 
@@ -52,7 +69,7 @@ public class AiService {
         if (response.statusCode() != 200) {
             System.out.println("DEBUG - Ollama Status: " + response.statusCode());
             System.out.println("DEBUG - Raspuns Ollama: " + responseBody);
-            return "Analiza de risc: Ruta stabila conform istoricului recent (local status " + response.statusCode() + ").";
+            throw new RuntimeException("Eroare status HTTP Ollama: " + response.statusCode());
         }
 
         String result = extractJsonStringValue(responseBody, "response");
@@ -60,12 +77,12 @@ public class AiService {
             return result.replace("[/INST]", "").replace("[INST]", "").replace("\n", " ").trim();
         }
 
-        return "Analiza indisponibila momentan (Ollama output invalid).";
+        throw new RuntimeException("Raspuns invalid de la Ollama (campul 'response' lipseste).");
     }
 
     private String genereazaAnalizaGemini(String promptText) throws Exception {
         if (apiKey == null || apiKey.trim().isEmpty()) {
-            return "Cheia API Gemini lipseste. Configureaza-o in application.properties sau comuta pe Ollama.";
+            throw new IllegalStateException("Cheia API Gemini lipseste.");
         }
 
         String urlString = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=" + apiKey.trim();
@@ -86,7 +103,7 @@ public class AiService {
         if (response.statusCode() != 200) {
             System.out.println("DEBUG - Status: " + response.statusCode());
             System.out.println("DEBUG - Raspuns Google: " + responseBody);
-            return "Analiza de risc: Ruta stabila conform istoricului recent.";
+            throw new RuntimeException("Eroare status HTTP Gemini: " + response.statusCode());
         }
 
         String result = extractJsonStringValue(responseBody, "text");
@@ -94,7 +111,7 @@ public class AiService {
             return result.replace("\n", " ").trim();
         }
 
-        return "Analiza indisponibila momentan (Gemini output invalid).";
+        throw new RuntimeException("Raspuns invalid de la Gemini (campul 'text' lipseste).");
     }
 
     private String extractJsonStringValue(String json, String key) {

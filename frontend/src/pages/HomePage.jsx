@@ -8,6 +8,7 @@ const HomePage = () => {
   const [destinatie, setDestinatie] = useState("");
   const [rute, setRute] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [expertiza, setExpertiza] = useState("");
 
   useEffect(() => {
     const fetchStatii = async () => {
@@ -24,9 +25,11 @@ const HomePage = () => {
   const handleSearch = async () => {
     if (!plecare || !destinatie) return;
     setLoading(true);
+    setExpertiza("");
     try {
       const res = await axios.get(`http://localhost:8080/api/rute/cauta?plecare=${plecare}&destinatie=${destinatie}`);
-      setRute(res.data);
+      setRute(res.data.rute || []);
+      setExpertiza(res.data.expertizaGenerala || "");
     } catch (err) {
       console.error("Eroare la cautarea rutei:", err);
     } finally {
@@ -99,6 +102,22 @@ const HomePage = () => {
 
       {/* Cardurile de rezultate imbunatatite vizual */}
       <div className="space-y-8 max-w-4xl mx-auto">
+        {expertiza && (
+          <div className="bg-gradient-to-r from-amber-50 to-orange-50 border-l-4 border-amber-500 p-6 rounded-3xl shadow-md flex gap-4 items-start shadow-amber-100/30">
+            <div className="bg-white p-2 rounded-full shadow-sm text-amber-600">
+              <Sparkles className="animate-pulse" size={20} />
+            </div>
+            <div>
+              <h4 className="font-black text-amber-800 text-xs uppercase tracking-widest mb-1">
+                Expertiză Generală Smart Rail (AI)
+              </h4>
+              <p className="text-slate-800 text-sm font-semibold leading-relaxed">
+                {expertiza}
+              </p>
+            </div>
+          </div>
+        )}
+
         {rute.length > 0 ? rute.map((ruta) => (
           <div key={ruta.idRuta} className="bg-white/80 backdrop-blur-sm p-6 md:p-8 rounded-[3rem] shadow-lg shadow-slate-200/50 border border-white hover:-translate-y-2 hover:shadow-2xl hover:shadow-blue-500/15 transition-all duration-500 ease-out group">
             

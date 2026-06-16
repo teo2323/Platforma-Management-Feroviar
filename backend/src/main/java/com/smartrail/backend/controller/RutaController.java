@@ -2,17 +2,21 @@ package com.smartrail.backend.controller;
 
 import com.smartrail.backend.model.InstantaCalatorie;
 import com.smartrail.backend.model.RutaProgramata;
+import com.smartrail.backend.model.OprireTraseu;
+import com.smartrail.backend.model.Calamitate;
+import com.smartrail.backend.model.SearchResultDto;
 import com.smartrail.backend.repository.InstantaCalatorieRepository;
 import com.smartrail.backend.repository.RutaProgramataRepository;
 import com.smartrail.backend.service.AiService;
+import com.smartrail.backend.service.CalamitateService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Set;
+import java.util.HashSet;
 
 @RestController
 @RequestMapping("/api/rute")
@@ -28,12 +32,18 @@ public class RutaController {
     @Autowired
     private AiService aiService;
 
+    @Autowired
+    private CalamitateService calamitateService;
+
     @GetMapping("/cauta")
-    public List<RutaProgramata> cautaRute(
+    public SearchResultDto cautaRute(
             @RequestParam String plecare,
             @RequestParam String destinatie) {
 
         List<RutaProgramata> rute = rutaRepository.gasesteRuteValide(plecare, destinatie);
+
+        StringBuilder routesInfoBuilder = new StringBuilder();
+        Set<Calamitate> calamitatiRelevante = new HashSet<>();
 
         for (RutaProgramata ruta : rute) {
             List<InstantaCalatorie> istoric = instantaRepository.findByRutaProgramata_IdRuta(ruta.getIdRuta());
@@ -84,15 +94,81 @@ public class RutaController {
             }
 
             String analizaAi = aiService.genereazaAnaliza(prompt);
-            ruta.setRecomandareAi(analizaAi.replace("\n", " ").trim());
+            String analizaAiCurata = analizaAi.replace("\n", " ").trim();
+            ruta.setRecomandareAi(analizaAiCurata);
+
+            routesInfoBuilder.append("- Tren: ").append(ruta.getTren().getIdTren())
+                    .append(" (").append(ruta.getTren().getTipTren()).append("), ")
+                    .append("Analiză AI: ").append(analizaAiCurata).append("\n");
+
+            if (ruta.getOpriri() != null) {
+                for (OprireTraseu oprire : ruta.getOpriri()) {
+                    String numeStatie = oprire.getStatie().getNumeStatie();
+                    Calamitate cal = calamitateService.getCalamitatePentruStatie(numeStatie);
+                    if (cal != null) {
+                        calamitatiRelevante.add(cal);
+                    }
+                }
+            }
 
             try {
-                Thread.sleep(1500);
+                Thread.sleep(1000);
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
             }
         }
 
-        return rute;
+        StringBuilder calamitiesBuilder = new StringBuilder();
+        if (calamitatiRelevante.isEmpty()) {
+            calamitiesBuilder.append("Nu există calamități active pe stațiile acestor rute.\n");
+        } else {
+            for (Calamitate cal : calamitatiRelevante) {
+                calamitiesBuilder.append("- În stația ").append(cal.getNumeStatie())
+                        .append(" este semnalată calamitatea: ").append(cal.getTipCalamitate())
+                        .append(" (").append(cal.getIcon()).append(")\n");
+            }
+        }
+
+        String expertizaGenerala = "Nu s-au putut genera recomandări din lipsă de rute active.";
+        if (!rute.isEmpty()) {
+            LocalDate today = LocalDate.now();
+            String season = getSeason(today);
+            String dateStr = today.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+
+            String secondPrompt = "[INST] Ești un expert coordonator de trafic feroviar. Rolul tău este să compari toate rutele disponibile pentru călătoria de la " 
+                    + plecare + " la " + destinatie + " și să oferi o recomandare generală consolidată pentru pasager.\n"
+                    + "Data curentă a călătoriei: " + dateStr + " (Sezonul curent: " + season + ").\n\n"
+                    + "Iată rutele disponibile cu analizele lor individuale (ce contin statistici si tipare):\n"
+                    + routesInfoBuilder.toString() + "\n"
+                    + "Calamități active în stații pe traseu:\n"
+                    + calamitiesBuilder.toString() + "\n"
+                    + "Sarcina ta:\n"
+                    + "1. Analizează rutele și corelează tiparele lor din istoricul primului AI (ex: întârzieri iarna) cu sezonul curent (" + season + ").\n"
+                    + "2. Verifică dacă vreo rută trece prin stații afectate de calamități. Dacă da, avertizează ferm pasagerul despre riscul de întârziere majoră și recomandă evitarea acelei rute sau tren.\n"
+                    + "3. Oferă un verdict clar și o recomandare precisă: care tren este cea mai bună opțiune în acest moment și de ce.\n\n"
+                    + "Răspunde direct, în limba română, într-o singură secțiune/paragraf, în maxim 85 de cuvinte. Nu folosi formule introductive formale precum 'În calitate de expert...'. Fii concis și direct. [/INST]";
+
+            try {
+                expertizaGenerala = aiService.genereazaAnaliza(secondPrompt);
+            } catch (Exception e) {
+                System.err.println("Eroare generare expertiza generala AI: " + e.getMessage());
+                expertizaGenerala = "Recomandare generală indisponibilă momentan.";
+            }
+        }
+
+        return new SearchResultDto(rute, expertizaGenerala.replace("\n", " ").trim());
+    }
+
+    private String getSeason(LocalDate date) {
+        int month = date.getMonthValue();
+        if (month == 12 || month == 1 || month == 2) {
+            return "Iarnă";
+        } else if (month >= 3 && month <= 5) {
+            return "Primăvară";
+        } else if (month >= 6 && month <= 8) {
+            return "Vară";
+        } else {
+            return "Toamnă";
+        }
     }
 }
