@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { 
+import { useParams } from 'react-router-dom';
+import {
   Snowflake, 
   Wifi, 
   Plug, 
@@ -15,8 +16,9 @@ import {
 } from 'lucide-react';
 
 const WagonWeb = () => {
+  const { id: trenIdFromUrl } = useParams();
   const [trenuri, setTrenuri] = useState([]);
-  const [selectedTrenId, setSelectedTrenId] = useState('');
+  const [selectedTrenId, setSelectedTrenId] = useState(trenIdFromUrl || '');
   const [trenData, setTrenData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
