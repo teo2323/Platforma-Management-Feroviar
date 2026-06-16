@@ -1,9 +1,8 @@
 package com.smartrail.backend.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.persistence.Column;
+import jakarta.persistence.*;
+import java.util.List;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Table(name = "Trenuri")
@@ -19,6 +18,9 @@ public class Tren {
     @Column(name = "capacitate_totala")
     private Integer capacitateTotala;
 
+    @OneToMany(mappedBy = "tren", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnoreProperties("tren")
+    private List<VagonTren> vagoane;
 
     public Tren() {}
 
@@ -31,4 +33,7 @@ public class Tren {
 
     public Integer getCapacitateTotala() { return capacitateTotala; }
     public void setCapacitateTotala(Integer capacitateTotala) { this.capacitateTotala = capacitateTotala; }
+
+    public List<VagonTren> getVagoane() { return vagoane; }
+    public void setVagoane(List<VagonTren> vagoane) { this.vagoane = vagoane; }
 }
