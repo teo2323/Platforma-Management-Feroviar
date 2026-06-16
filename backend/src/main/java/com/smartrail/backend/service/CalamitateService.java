@@ -52,6 +52,16 @@ public class CalamitateService {
         COORDONATE_STATII.put("Cluj-Napoca", new Coordinate(46.7772, 23.5898));
         COORDONATE_STATII.put("Oradea", new Coordinate(47.0735, 21.9406));
         COORDONATE_STATII.put("Satu Mare", new Coordinate(47.7884, 22.8870));
+        COORDONATE_STATII.put("Iasi", new Coordinate(47.1585, 27.6014));
+        COORDONATE_STATII.put("Pascani", new Coordinate(47.2500, 26.7167));
+        COORDONATE_STATII.put("Suceava", new Coordinate(47.6514, 26.2556));
+        COORDONATE_STATII.put("Bacau", new Coordinate(46.5688, 26.9159));
+        COORDONATE_STATII.put("Focsani", new Coordinate(45.7001, 27.1820));
+        COORDONATE_STATII.put("Buzau", new Coordinate(45.1516, 26.8167));
+        COORDONATE_STATII.put("Galati", new Coordinate(45.4353, 28.0553));
+        COORDONATE_STATII.put("Braila", new Coordinate(45.2692, 27.9575));
+        COORDONATE_STATII.put("Baia Mare", new Coordinate(47.6533, 23.5794));
+        COORDONATE_STATII.put("Dej Calatori", new Coordinate(47.1492, 23.8694));
     }
 
     private static final List<String[]> TIPURI_CALAMITATI = Arrays.asList(
